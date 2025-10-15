@@ -195,7 +195,7 @@ class EEGVisualizer:
         
         print(f"Current alpha (%): {alpha_rel:.2f}, "
               f"current threshold: {threshold:.2f}, "
-              f"above threshold: {"yes" if above else "no"}")
+              f"above threshold: {'yes' if above else 'no'}")
 
         if self.serial_port and self.serial_port.is_open:
             try:
