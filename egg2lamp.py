@@ -184,6 +184,15 @@ class EEGVisualizer:
         threshold = self.tracker.get_threshold()
 
         above = alpha_rel > threshold
+        a, b, c = bandpowers["Alpha"], bandpowers["Beta"], bandpowers["Gamma"]
+        highest = 0
+        if a >= b and a >= c:
+            highest = 1
+        elif b >= a and b >= c:
+            highest = 2
+        else:
+            highest = 3
+        
         print(f"Current alpha (%): {alpha_rel:.2f}, "
               f"current threshold: {threshold:.2f}, "
               f"above threshold: {"yes" if above else "no"}")
@@ -191,7 +200,7 @@ class EEGVisualizer:
         if self.serial_port and self.serial_port.is_open:
             try:
                 # write 1 to the port if the threshold is crossed, 0 otherwise
-                self.serial_port.write(b'1\n' if above else b'0\n')
+                self.serial_port.write(bytes(highest+"\n"))
             except Exception as e:
                 print(f"Failed to write to port: {e}")
 

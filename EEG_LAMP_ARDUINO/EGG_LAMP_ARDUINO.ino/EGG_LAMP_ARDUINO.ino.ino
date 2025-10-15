@@ -18,6 +18,7 @@ CRGB color_high = CRGB(255, 200, 0);   // yellow
 
 int current_brightness = BRIGHT_MIN;
 int target_brightness = BRIGHT_MIN;
+int target_color = 0;
 unsigned long last_update = 0;
 
 void setup() {
@@ -35,8 +36,9 @@ void loop() {
   if (Serial.available()) {
     char c = Serial.read();
 
-    if (c == '1') target_brightness = BRIGHT_MAX;
-    else if (c == '0') target_brightness = BRIGHT_MIN;
+    if (c === '1')
+    // if (c == '1') target_brightness = BRIGHT_MAX;
+    // else if (c == '0') target_brightness = BRIGHT_MIN;
   }
 
   // Change brightness every FADE_DELAY ms
