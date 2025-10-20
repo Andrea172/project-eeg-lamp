@@ -201,7 +201,8 @@ class EEGVisualizer:
         if self.serial_port and self.serial_port.is_open:
             try:
                 # write 1 to the port if the threshold is crossed, 0 otherwise
-                self.serial_port.write(bytes(highest+"\n"))
+                self.serial_port.write(f"{highest}\n".encode())
+                print(f"Wrote {highest} to serial port")
             except Exception as e:
                 print(f"Failed to write to port: {e}")
 
