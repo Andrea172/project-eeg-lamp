@@ -184,7 +184,7 @@ class EEGVisualizer:
         threshold = self.tracker.get_threshold()
 
         above = alpha_rel > threshold
-        a, b, c = bandpowers["Alpha"], bandpowers["Beta"], bandpowers["Gamma"]
+        a, b, c =  bandpowers["Alpha"], bandpowers["Beta"], bandpowers["Gamma"]
         highest = 0
         if a >= b and a >= c:
             highest = 1
@@ -195,6 +195,7 @@ class EEGVisualizer:
         
         print(f"Current alpha (%): {alpha_rel:.2f}, "
               f"current threshold: {threshold:.2f}, "
+              f"current highest: {highest}, "
               f"above threshold: {'yes' if above else 'no'}")
 
         if self.serial_port and self.serial_port.is_open:
@@ -205,9 +206,17 @@ class EEGVisualizer:
                 print(f"Failed to write to port: {e}")
 
         if self.simulate_lamp:
-            self.lamp_value = self.lamp_value + 1.0 if above else self.lamp_value - 1.0
-            self.lamp_value = max(min(self.lamp_max, self.lamp_value), 0.0)  # clamp, not actually necessary
-            self.lamp.set_data([[self.lamp_value]])
+            # Use discrete lamp states depending on which band is highest
+            # highest: 1=Alpha, 2=Beta, 3=Gamma -> map to discrete lamp levels 0, mid, max
+            if highest == 1:
+                level = int(self.lamp_max * 0.0)
+            elif highest == 2:
+                level = int(self.lamp_max * 0.5)
+            else:
+                level = int(self.lamp_max * 1.0)
+
+            # Update lamp display with discrete level
+            self.lamp.set_data([[level]])
 
         for bar, label, (name, value) in zip(self.bars, self.labels, bandpowers.items()):
             bar.set_height(value)
